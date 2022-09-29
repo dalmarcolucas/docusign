@@ -57,6 +57,12 @@ class Docusign
         return $recipients = $this->rawJson($request);
     }
 
+    public function getRecipientSignature($envelopeId, $recipientId)
+    {
+        $request = $this->client->get('envelopes/' . $envelopeId . '/recipients/' . $recipientId . '/signature');
+        return $recipients = $this->rawJson($request);
+    }
+
     public function getEnvelopeTabs($envelopeId, $recipientId)
     {
         $request = $this->client->get('envelopes/' . $envelopeId . '/recipients/' . $recipientId . '/tabs');
