@@ -1,10 +1,7 @@
-# DocuSign for Laravel 7
+# DocuSign for Laravel 8
 
 <dl>
   <dt>This package was developed to utilize e-contract/signatures directly within a Laravel based CRM. </dt>
-</dl>
-<dl>
-  <dt>This commit is a privately long used expansion of the Envelope Trait, to be updated & include additional Traits for recipients, documents, etc.</dt>
 </dl>
 
 [![PHPPackages Rank](http://phppackages.org/p/tjphippen/docusign/badge/rank.svg)](http://phppackages.org/p/tjphippen/docusign)
@@ -12,12 +9,19 @@
 - [Packagist](https://packagist.org/packages/tjphippen/docusign)
 - [GitHub](https://github.com/tjphippen/docusign)
 
+
+### Refer to 
+[Latest Docusign API Documentation](https://developers.docusign.com/docs/esign-rest-api/reference/) for outdated links.
+
+Also see my [eOriginal](https://github.com/tjphippen/eoriginal) package
+
+
 ----------
 ## Installation
 Add the following to your `composer.json` file.
 
 ~~~
-"tjphippen/docusign": "0.3*@dev"
+"tjphippen/docusign": "0.4*@dev"
 ~~~
 
 Then run `composer install` or `composer update` to download and install.
