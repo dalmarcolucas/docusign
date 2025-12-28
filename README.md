@@ -1,13 +1,13 @@
-# DocuSign for Laravel 8
+# DocuSign for Laravel 8, 9, 10, and 11
 
 <dl>
   <dt>This package was developed to utilize e-contract/signatures directly within a Laravel based CRM. </dt>
 </dl>
 
-[![PHPPackages Rank](http://phppackages.org/p/tjphippen/docusign/badge/rank.svg)](http://phppackages.org/p/tjphippen/docusign)
-[![Latest Stable Version](https://poser.pugx.org/tjphippen/docusign/v/stable.png)](https://packagist.org/packages/tjphippen/docusign) [![Total Downloads](https://poser.pugx.org/tjphippen/docusign/downloads.png)](https://packagist.org/packages/tjphippen/docusign)
-- [Packagist](https://packagist.org/packages/tjphippen/docusign)
-- [GitHub](https://github.com/tjphippen/docusign)
+[![PHPPackages Rank](http://phppackages.org/p/dalmarcolucas/docusign/badge/rank.svg)](http://phppackages.org/p/dalmarcolucas/docusign)
+[![Latest Stable Version](https://poser.pugx.org/dalmarcolucas/docusign/v/stable.png)](https://packagist.org/packages/dalmarcolucas/docusign) [![Total Downloads](https://poser.pugx.org/dalmarcolucas/docusign/downloads.png)](https://packagist.org/packages/dalmarcolucas/docusign)
+- [Packagist](https://packagist.org/packages/dalmarcolucas/docusign)
+- [GitHub](https://github.com/dalmarcolucas/docusign)
 
 
 ### Refer to 
@@ -18,29 +18,44 @@ Also see my [eOriginal](https://github.com/tjphippen/eoriginal) package
 
 ----------
 ## Installation
-Add the following to your `composer.json` file.
 
-~~~
-"tjphippen/docusign": "0.4*@dev"
-~~~
+### Using Composer
+
+Add the package to your project:
+
+```bash
+composer require dalmarcolucas/docusign:0.4*@dev
+```
+
+Or add the following to your `composer.json` file:
+
+```json
+"dalmarcolucas/docusign": "0.4*@dev"
+```
 
 Then run `composer install` or `composer update` to download and install.
 
-You'll then need to register the service provider in your `config/app.php` file within `providers`.
+### Service Provider Registration
+
+For Laravel 5.5 and above, the package uses auto-discovery, so the service provider and facade are automatically registered.
+
+If you're using an older version of Laravel or need to register manually, add the service provider to your `config/app.php` file within the `providers` array:
 
 ```php
-'providers' => array(
+'providers' => [
     Tjphippen\Docusign\DocusignServiceProvider::class,
-)
+]
 ```
 
-DocuSign includes a auto registered facade which provides the static syntax for managing envelopes, recipients etc. 
-If you have issues simply add it manually to your aliases array
+### Facade Registration
+
+The package includes an auto-registered facade which provides the static syntax for managing envelopes, recipients, etc. 
+If you have issues or need to register it manually, add it to your `aliases` array in `config/app.php`:
 
 ```php
-'aliases' => array(
-    'Docusign'  => Tjphippen\Docusign\Facades\Docusign::class,
-)
+'aliases' => [
+    'Docusign' => Tjphippen\Docusign\Facades\Docusign::class,
+]
 ```
 
 ### Create configuration file using artisan
