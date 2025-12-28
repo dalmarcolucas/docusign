@@ -4,7 +4,6 @@
   <dt>This package was developed to utilize e-contract/signatures directly within a Laravel based CRM. </dt>
 </dl>
 
-[![PHPPackages Rank](http://phppackages.org/p/dalmarcolucas/docusign/badge/rank.svg)](http://phppackages.org/p/dalmarcolucas/docusign)
 [![Latest Stable Version](https://poser.pugx.org/dalmarcolucas/docusign/v/stable.png)](https://packagist.org/packages/dalmarcolucas/docusign) [![Total Downloads](https://poser.pugx.org/dalmarcolucas/docusign/downloads.png)](https://packagist.org/packages/dalmarcolucas/docusign)
 - [Packagist](https://packagist.org/packages/dalmarcolucas/docusign)
 - [GitHub](https://github.com/dalmarcolucas/docusign)
