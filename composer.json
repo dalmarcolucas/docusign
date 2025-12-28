@@ -1,5 +1,5 @@
 {
-    "name": "tjphippen/docusign",
+    "name": "dalmarcolucas/docusign",
     "description": "DocuSign Rest API Wrapper for Laravel.",
     "keywords": [
         "laravel",
@@ -10,7 +10,7 @@
         "envelope",
         "contracts"
     ],
-    "homepage": "https://github.com/tjphippen/docusign",
+    "homepage": "https://github.com/dalmarcolucas/docusign",
     "license": "MIT",
     "authors": [
         {
@@ -40,7 +40,7 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/tjphippen/docusign"
+            "url": "https://github.com/dalmarcolucas/docusign"
         }
     ],
     "extra": {
