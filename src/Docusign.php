@@ -7,6 +7,7 @@ class Docusign
     private $config;
     private $client;
     private $baseUrl;
+    private ?JwtAuth $jwtAuth = null;
 
     function __construct($config, $clientSettings=[])
     {
@@ -14,6 +15,11 @@ class Docusign
         $this->baseUrl = 'https://' . $config['environment']. '.docusign.net/restapi/' . $config['version'] . '/accounts/' . $config['account_id'] . '/';
         if(array_key_exists('query', $clientSettings)) unset($clientSettings['query']); //don't let some malicious user somehow override our request bodies. 
         if(array_key_exists('json', $clientSettings)) unset($clientSettings['json']); //they'd be overwritten anyway, but still.
+
+        if (($config['auth_type'] ?? 'legacy') === 'jwt') {
+            $this->jwtAuth = new JwtAuth($config);
+        }
+
         $this->client = new Client(array_merge($clientSettings, ['base_uri' => $this->baseUrl, 'headers' => $this->getHeaders()]));
     }
 
@@ -171,6 +177,14 @@ class Docusign
 
     public function getHeaders($accept = 'application/json', $contentType = 'application/json')
     {
+        if ($this->jwtAuth) {
+            return [
+                'Authorization' => 'Bearer ' . $this->jwtAuth->getAccessToken(),
+                'Accept' => $accept,
+                'Content-Type' => $contentType,
+            ];
+        }
+
         return array(
             'X-DocuSign-Authentication' => '<DocuSignCredentials><Username>' . $this->config['email'] . '</Username><Password>' . $this->config['password'] . '</Password><IntegratorKey>' . $this->config['integrator_key'] . '</IntegratorKey></DocuSignCredentials>',
             'Accept' => $accept,
