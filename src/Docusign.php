@@ -13,19 +13,19 @@ class Docusign
     {
         $this->config = $config;
         $this->baseUrl = 'https://' . $config['environment']. '.docusign.net/restapi/' . $config['version'] . '/accounts/' . $config['account_id'] . '/';
-        if(array_key_exists('query', $clientSettings)) unset($clientSettings['query']); //don't let some malicious user somehow override our request bodies. 
-        if(array_key_exists('json', $clientSettings)) unset($clientSettings['json']); //they'd be overwritten anyway, but still.
+        if(array_key_exists('query', $clientSettings)) unset($clientSettings['query']);
+        if(array_key_exists('json', $clientSettings)) unset($clientSettings['json']);
 
         if (($config['auth_type'] ?? 'legacy') === 'jwt') {
             $this->jwtAuth = new JwtAuth($config);
         }
 
-        $this->client = new Client(array_merge($clientSettings, ['base_uri' => $this->baseUrl, 'headers' => $this->getHeaders()]));
+        $this->client = new Client(array_merge($clientSettings, ['base_uri' => $this->baseUrl]));
     }
 
     public function getUsers()
     {
-        $request = $this->client->get('users');
+        $request = $this->request("GET", 'users');
         $users = $this->rawJson($request);
         return $users['users'];
     }
@@ -33,143 +33,149 @@ class Docusign
     public function getUser($userId, $additional_info = false)
     {
         $additional_info = ($additional_info) ? 'true' : 'false';
-        $request = $this->client->get('users/' . $userId . '?additional_info=' . $additional_info);
+        $request = $this->request("GET", 'users/' . $userId . '?additional_info=' . $additional_info);
         return $user = $this->rawJson($request);
     }
 
     public function getEnvelopes($envelopeIds)
     {
         $envelopes = array('envelopeIds' => $envelopeIds);
-        $request = $this->client->put('envelopes/status', ['json' => $envelopes, 'query' => ['envelope_ids' => 'request_body']]);
+        $request = $this->request("PUT", 'envelopes/status', ['json' => $envelopes, 'query' => ['envelope_ids' => 'request_body']]);
         return $envelopes = $this->rawJson($request);
     }
 
     public function getEnvelope($envelopeId)
     {
-        $request = $this->client->get('envelopes/' . $envelopeId);
+        $request = $this->request("GET", 'envelopes/' . $envelopeId);
         return $envelope = $this->rawJson($request);
     }
 
     public function getEnvelopePdf($envelopeId)
     {
-        $request = $this->client->get('envelopes/' . $envelopeId . '/documents/combined?certificate=true');
+        $request = $this->request("GET", 'envelopes/' . $envelopeId . '/documents/combined?certificate=true');
         return $request->getBody()->getContents();
     }
 
     public function getEnvelopeRecipients($envelopeId, $include_tabs = false)
     {
         $include_tabs = ($include_tabs) ? 'true' : 'false';
-        $request = $this->client->get('envelopes/' . $envelopeId . '/recipients?include_tabs=' . $include_tabs);
+        $request = $this->request("GET", 'envelopes/' . $envelopeId . '/recipients?include_tabs=' . $include_tabs);
         return $recipients = $this->rawJson($request);
     }
 
     public function getRecipientSignature($envelopeId, $recipientId)
     {
-        $request = $this->client->get('envelopes/' . $envelopeId . '/recipients/' . $recipientId . '/signature');
+        $request = $this->request("GET", 'envelopes/' . $envelopeId . '/recipients/' . $recipientId . '/signature');
         return $recipients = $this->rawJson($request);
     }
 
     public function getEnvelopeTabs($envelopeId, $recipientId)
     {
-        $request = $this->client->get('envelopes/' . $envelopeId . '/recipients/' . $recipientId . '/tabs');
+        $request = $this->request("GET", 'envelopes/' . $envelopeId . '/recipients/' . $recipientId . '/tabs');
         return $tabs = $this->rawJson($request);
     }
 
 	 public function createEnvelope($data, $merge_roles_on_draft = 'false') {
-        $request = $this->client->post('envelopes/?merge_roles_on_draft='. $merge_roles_on_draft, ['json' => $data]);
+        $request = $this->request("POST", 'envelopes/?merge_roles_on_draft='. $merge_roles_on_draft, ['json' => $data]);
         return $envelope = $this->rawJson($request);
     }
 
     public function updateEnvelope($envelopeId, $data)
     {
-        $request = $this->client->put('envelopes/' . $envelopeId, ['json' => $data]);
+        $request = $this->request("PUT", 'envelopes/' . $envelopeId, ['json' => $data]);
         return $envelope = $this->rawJson($request);
     }
 
     public function updateEnvelopeRecipients($envelopeId, $recipients)
     {
-        $request = $this->client->put('envelopes/' . $envelopeId . '/recipients/' , ['json' => $recipients]);
+        $request = $this->request("PUT", 'envelopes/' . $envelopeId . '/recipients/' , ['json' => $recipients]);
         return $recipients = $this->rawJson($request);
     }
 
     public function updateRecipientTabs($envelopeId, $recipientId, $tabs)
     {
-        $request = $this->client->put('envelopes/' . $envelopeId . '/recipients/' . $recipientId . '/tabs', ['json' => $tabs]);
+        $request = $this->request("PUT", 'envelopes/' . $envelopeId . '/recipients/' . $recipientId . '/tabs', ['json' => $tabs]);
         return $tabs = $this->rawJson($request);
     }
 
     public function deleteEnvelope($envelopeId) {
         $data = array('envelopeIds' => array($envelopeId));
-        $request = $this->client->put('folders/recyclebin', ['json' => $data]);
+        $request = $this->request("PUT", 'folders/recyclebin', ['json' => $data]);
         return $deleted = $this->rawJson($request);
     }
 
     public function getTemplates($options = null)
     {
-        $request = $this->client->get('templates', ['query' => $options]);
+        $request = $this->request("GET", 'templates', ['query' => $options]);
         $templates = $this->rawJson($request);
         return $templates['envelopeTemplates'];
     }
 
     public function getTemplate($templateId)
     {
-        $request = $this->client->get('templates/' . $templateId);
+        $request = $this->request("GET", 'templates/' . $templateId);
         return $template = $this->rawJson($request);
     }
 
     public function getEnvelopeTemplates($envelopeId)
     {
-        $request = $this->client->get('envelopes/' . $envelopeId . '/templates');
+        $request = $this->request("GET", 'envelopes/' . $envelopeId . '/templates');
         $templates = $this->rawJson($request);
         return $templates['templates'];
     }
 	
     public function searchEnvelopesByText($search, $from_date, $to_date)
     {
-        $request = $this->client->get('envelopes', ['query' => ['search_text' => $search, 'from_date' => $from_date, 'to_date' => $to_date]]);
+        $request = $this->request("GET", 'envelopes', ['query' => ['search_text' => $search, 'from_date' => $from_date, 'to_date' => $to_date]]);
         return $envelope = $this->rawJson($request);
     }
 
     public function getFolders($templates = false)
     {
         $templates = ($templates) ? 'include' : 'only';
-        $request = $this->client->get('folders/?template=' . $templates);
+        $request = $this->request("GET", 'folders/?template=' . $templates);
         $folders = $this->rawJson($request);
         return $folders['folders'];
     }
 
     public function getFolderEnvelopes($folderId, $options = null)
     {
-        $request = $this->client->get('folders/' . $folderId, ['query' => $options]);
+        $request = $this->request("GET", 'folders/' . $folderId, ['query' => $options]);
         $envelopes = $this->rawJson($request);
         return $envelopes;
     }
 
     public function getEnvelopeCustomFields($envelopeId)
     {
-        $request = $this->client->get('envelopes/' . $envelopeId . '/custom_fields');
+        $request = $this->request("GET", 'envelopes/' . $envelopeId . '/custom_fields');
         return $custom_fields = $this->rawJson($request);
     }
 
     public function createRecipientView($envelopeId, $data)
     {
-        $request = $this->client->post('envelopes/' . $envelopeId . '/views/recipient', ['json' => $data]);
+        $request = $this->request("POST", 'envelopes/' . $envelopeId . '/views/recipient', ['json' => $data]);
         return $view = $this->rawJson($request);
     }
     
     public function createSenderView($envelopeId, $data)
     {
-        $request = $this->client->post('envelopes/' . $envelopeId . '/views/sender', ['json' => $data]);
+        $request = $this->request("POST", 'envelopes/' . $envelopeId . '/views/sender', ['json' => $data]);
         return $view = $this->rawJson($request);
     }
 
     public function updateEnvelopeDocuments($envelopeId, $data)
     {
-        $request = $this->client->put('envelopes/' . $envelopeId . '/documents', ['json' => $data]);
+        $request = $this->request("PUT", 'envelopes/' . $envelopeId . '/documents', ['json' => $data]);
         return $view = $this->rawJson($request);
     }
 
     // Helper Functions
+    private function request(string $method, string $uri, array $options = [])
+    {
+        $options['headers'] = array_merge($this->getHeaders(), $options['headers'] ?? []);
+        return $this->client->request($method, $uri, $options);
+    }
+
     public function rawJson($response)
     {
         return json_decode($response->getBody()->getContents(), true);

@@ -43,7 +43,12 @@ class JwtAuth
             'scope' => implode(' ', $this->scopes),
         ];
 
-        $assertion = JWT::encode($payload, $this->privateKey, 'RS256');
+        $key = $this->privateKey;
+        if (is_file($key)) {
+            $key = file_get_contents($key);
+        }
+
+        $assertion = JWT::encode($payload, $key, 'RS256');
 
         $client = new Client();
         $response = $client->post('https://' . $this->authServer . '/oauth/token', [
@@ -65,7 +70,7 @@ class JwtAuth
      */
     public function getConsentUrl(string $redirectUri = 'https://www.docusign.com'): string
     {
-        $scopes = implode('+', $this->scopes);
+        $scopes = urlencode(implode(' ', $this->scopes));
         return 'https://' . $this->authServer . '/oauth/auth?response_type=code'
             . '&scope=' . $scopes
             . '&client_id=' . $this->clientId
