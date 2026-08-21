@@ -4,15 +4,14 @@
   <dt>This package was developed to utilize e-contract/signatures directly within a Laravel based CRM. </dt>
 </dl>
 
+> **Maintenance notice:** This is a maintained fork of [`tjphippen/docusign`](https://github.com/tjphippen/docusign), which is no longer maintained.
+
 [![Latest Stable Version](https://poser.pugx.org/dalmarcolucas/docusign/v/stable.png)](https://packagist.org/packages/dalmarcolucas/docusign) [![Total Downloads](https://poser.pugx.org/dalmarcolucas/docusign/downloads.png)](https://packagist.org/packages/dalmarcolucas/docusign)
 - [Packagist](https://packagist.org/packages/dalmarcolucas/docusign)
 - [GitHub](https://github.com/dalmarcolucas/docusign)
 
 
-### Refer to 
-[Latest Docusign API Documentation](https://developers.docusign.com/docs/esign-rest-api/reference/) for outdated links.
-
-Also see my [eOriginal](https://github.com/tjphippen/eoriginal) package
+For current endpoint documentation, see the [DocuSign eSignature REST API reference](https://developers.docusign.com/docs/esign-rest-api/reference/).
 
 
 ----------
@@ -23,22 +22,24 @@ Also see my [eOriginal](https://github.com/tjphippen/eoriginal) package
 Add the package to your project:
 
 ```bash
-composer require dalmarcolucas/docusign:0.4*@dev
+composer require dalmarcolucas/docusign
 ```
 
 Or add the following to your `composer.json` file:
 
 ```json
-"dalmarcolucas/docusign": "0.4*@dev"
+"dalmarcolucas/docusign": "^0.4"
 ```
 
 Then run `composer install` or `composer update` to download and install.
 
+> **Namespace compatibility:** This package is maintained as `dalmarcolucas/docusign`, but retains the original `Tjphippen\Docusign` PHP namespace. The namespace is therefore correct in the manual registration examples below.
+
 ### Service Provider Registration
 
-For Laravel 5.5 and above, the package uses auto-discovery, so the service provider and facade are automatically registered.
+The package supports Laravel 8 through 11 and uses auto-discovery, so the service provider and facade are registered automatically.
 
-If you're using an older version of Laravel or need to register manually, add the service provider to your `config/app.php` file within the `providers` array:
+If auto-discovery is disabled, add the service provider to your `config/app.php` file within the `providers` array:
 
 ```php
 'providers' => [
@@ -213,8 +214,8 @@ Docusign::createEnvelope(array(
    'emailSubject'   => 'Demo Envelope Subject', // Subject of email sent to all recipients
    'status'         => 'created', // created = draft ('sent' will send the envelope!)
    'templateRoles'  => array(
-        ['name'     => 'TJ Phippen',
-         'email'    => 'tj@tjphippen.com',
+        ['name'     => 'Contractor Name',
+         'email'    => 'contractor@example.com',
          'roleName' => 'Contractor',
          'clientUserId'  => 1],
         ['name'     => 'Jane Someone',
@@ -240,8 +241,8 @@ Returns embeded signing URL. [Reference] (https://www.docusign.com/p/RESTAPIGuid
 
 ```php
 Docusign::createRecipientView($envelopeId, array(
-    'userName' => 'TJ Phippen',
-    'email' => 'tj@tjphippen.com',
+    'userName' => 'Signer Name',
+    'email' => 'signer@example.com',
     'AuthenticationMethod' => 'email',
     'clientUserId' => 1, // Must create envelope with this ID
     'returnUrl' => 'http://your-site.tdl/returningUrl'
