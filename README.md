@@ -65,25 +65,35 @@ $ php artisan vendor:publish
 
 The configuration file will be published to `config/docusign.php` which must be completed to make connections to the API.
 
+### JWT Authentication (Recommended)
+
+DocuSign is phasing out legacy authentication (username/password). The recommended approach is OAuth 2.0 JWT Grant flow.
+
+1. Create an integration (app) in the [DocuSign Admin Console](https://admindemo.docusign.com/)
+2. Generate an RSA key pair and note your Integration Key (Client ID)
+3. Grant consent by visiting the consent URL (one-time step per user)
+4. Configure your `config/docusign.php`:
 
 ```php
+'auth_type' => 'jwt',
+'client_id' => env('DOCUSIGN_CLIENT_ID'),        // Integration Key
+'user_id' => env('DOCUSIGN_USER_ID'),             // User ID (GUID) to impersonate
+'private_key' => env('DOCUSIGN_PRIVATE_KEY'),     // RSA private key (PEM string)
+'auth_server' => 'account-d.docusign.com',        // Use 'account.docusign.com' for production
+'account_id' => env('DOCUSIGN_ACCOUNT_ID'),
+'environment' => 'demo',                          // Use 'na1', 'na2', etc. for production
+'version' => 'v2.1',
+```
 
-    /**
-     * The DocuSign Integrator's Key
-     */
+See [DocuSign JWT Grant Documentation](https://developers.docusign.com/platform/auth/jwt/) for details.
 
-    'integrator_key' => '',
+### Legacy Authentication (Deprecated)
 
-    /**
-     * The Docusign Account Email
-     */
-    'email' => '',
-
-    /**
-     * The Docusign Account Password
-     */
-    'password' => '',
-...
+```php
+'auth_type' => 'legacy',
+'integrator_key' => '',
+'email' => '',
+'password' => '',
 ```
 
 ## Examples
